@@ -1,0 +1,56 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 12px sans-serif;
+}
+
+path {
+  stroke-width: 1px;
+  stroke: #000000;
+  fill: #fefdff;
+  cursor: pointer;
+}
+
+path.q0-11 {
+  fill: #313695;
+}
+
+path.q1-11 {
+  fill: #4575b4;
+}
+
+path.q2-11 {
+  fill: #74add1;
+}
+
+path.q3-11 {
+  fill: #abd9e9;
+}
+
+path.q4-11 {
+  fill: #e0f3f8;
+}
+
+path.q5-11 {
+  fill: #ffffbf;
+}
+
+path.q6-11 {
+  fill: #fee090;
+}
+
+path.q7-11 {
+  fill: #fdae61;
+}
+
+path.q8-11 {
+  fill: #f46d43;
+}
+
+path.q9-11 {
+  fill: #d73027;
+}
+
+path.q10-11 {
+  fill: #a50026;
+}
