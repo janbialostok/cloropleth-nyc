@@ -6,12 +6,13 @@
     "react-scripts": "0.8.5"
   },
   "dependencies": {
-    "d3": "^4.5.0",
+    "d3": "^3.5.17",
     "re-bulma": "^0.3.1",
     "react": "^15.4.2",
+    "react-d3-library": "^1.1.7",
     "react-dom": "^15.4.2",
     "react-redux": "^5.0.2",
-    "topojson": "^2.2.0"
+    "topojson": "^1.6.27"
   },
   "scripts": {
     "start": "react-scripts start",

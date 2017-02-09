@@ -2,35 +2,53 @@ import React, { Component } from 'react';
 import { Container, Content } from 're-bulma';
 import geodata from '../bin/topo';
 import * as d3 from 'd3';
-import Map from '../components/map';
+import MapBox from '../components/map';
 
 class MapContainer extends Component {
 	constructor () {
 		super(...arguments);
-		this.state = {};
+		this.state = { range: [0, 250], tpjs: geodata };
 	}
-	generateProjection () {
+	generateProjection (min, max) {
+		min = (typeof min === 'number' && min < max) ? min : this.state.range[0];
+		max = (typeof max === 'number' && max > min) ? max : this.state.range[1];
 		let projection = d3.geo.conicEqualArea()
-	    .scale(77401.4488445439)
-	    .center([-73.88226918388682, 40.86712450078746])
-	    .parallels([40.49613398761198, 40.91553277700521])
-	    .rotate([73.88226918388682])
-	    .translate([-66491.99580426603, -29829.255772850523]);
+			.scale(77401.4488445439)
+			.center([-73.88226918388682, 40.86712450078746])
+			.parallels([40.49613398761198, 40.91553277700521])
+			.rotate([73.88226918388682])
+			.translate([-66491.99580426603, -29829.255772850523]);
 	  let path = d3.geo.path().projection(projection);
 	  let color = d3.scale.quantize()
-	    .domain([0,250])
-	    .range(d3.range(11).map(function(i) { return "q" + i + "-11"; }));
+			.domain([min, max])
+			.range(d3.range(11).map(function(i) { return "q" + i + "-11"; }));
 	  let zoom = d3.behavior.zoom()
-    	.scaleExtent([1, Infinity])
-    	.on("zoom",zoomed);
-    this.setState({ projection, color, zoom });
+			.scaleExtent([1, Infinity]);
+		let tpjs = Object.assign({}, this.state.tpjs);
+		tpjs.objects = Object.assign({}, tpjs.objects);
+		let collections = Object.assign({}, tpjs.objects.collection);
+		collections.geometries = collections.geometries.map(geo => {
+			if (geo.properties.permits > max) geo.properties.permits = max;
+			return geo; 
+		});
+		tpjs.objects.collections = collections;
+	  this.setState({ projection, color, zoom, range: [min, max], tpjs, path });
 	}
 	componentWillMount () {
 		this.generateProjection();
 	}
+	componentWillReceiveProps () {
+		this.generateProjection();
+	}
 	render () {
 		return (
-			<Map {...this.state}/>
+			<Container>
+				<Content>
+					<MapBox projection={ this.state.projection } path={ this.state.path } color={ this.state.color } zoom={ this.state.zoom } data={ this.state.tpjs } />
+				</Content>
+			</Container>
 		);
 	}
 };
+
+export default MapContainer;
