@@ -5,13 +5,10 @@ import * as d3 from 'd3';
 import MapBox from '../components/map';
 
 class MapContainer extends Component {
-	constructor () {
-		super(...arguments);
-		this.state = { range: [0, 250], tpjs: geodata };
-	}
 	generateProjection (min, max) {
-		min = (typeof min === 'number' && min < max) ? min : this.state.range[0];
-		max = (typeof max === 'number' && max > min) ? max : this.state.range[1];
+		console.log('generating projection');
+		min = (typeof min === 'number' && min < max) ? min : 0;
+		max = (typeof max === 'number' && max > min) ? max : 250;
 		let projection = d3.geo.conicEqualArea()
 			.scale(77401.4488445439)
 			.center([-73.88226918388682, 40.86712450078746])
@@ -24,7 +21,7 @@ class MapContainer extends Component {
 			.range(d3.range(11).map(function(i) { return "q" + i + "-11"; }));
 	  let zoom = d3.behavior.zoom()
 			.scaleExtent([1, Infinity]);
-		let tpjs = Object.assign({}, this.state.tpjs);
+		let tpjs = Object.assign({}, geodata);
 		tpjs.objects = Object.assign({}, tpjs.objects);
 		let collections = Object.assign({}, tpjs.objects.collection);
 		collections.geometries = collections.geometries.map(geo => {
@@ -32,19 +29,14 @@ class MapContainer extends Component {
 			return geo; 
 		});
 		tpjs.objects.collections = collections;
-	  this.setState({ projection, color, zoom, range: [min, max], tpjs, path });
-	}
-	componentWillMount () {
-		this.generateProjection();
-	}
-	componentWillReceiveProps () {
-		this.generateProjection();
+	  return { projection, color, zoom, range: [min, max], tpjs, path };
 	}
 	render () {
+		let properties = this.generateProjection();
 		return (
 			<Container>
 				<Content>
-					<MapBox projection={ this.state.projection } path={ this.state.path } color={ this.state.color } zoom={ this.state.zoom } data={ this.state.tpjs } />
+					<MapBox projection={ properties.projection } path={ properties.path } color={ properties.color } zoom={ properties.zoom } data={ properties.tpjs } />
 				</Content>
 			</Container>
 		);
